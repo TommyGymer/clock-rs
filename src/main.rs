@@ -1,4 +1,6 @@
-use bevy::{prelude::*, sprite::Anchor, window::PresentMode};
+use bevy::{
+    core_pipeline::tonemapping::DebandDither, prelude::*, sprite::Anchor, window::PresentMode,
+};
 use chrono::{Local, Timelike};
 use std::f32::consts::TAU;
 
@@ -126,6 +128,7 @@ fn setup(mut commands: Commands) {
             hdr: true,
             ..default()
         },
+        deband_dither: DebandDither::Enabled,
         ..default()
     },));
 }
