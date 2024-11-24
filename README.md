@@ -9,7 +9,7 @@ A simple analog clock written in Rust using the bevy engine
 ## Building
 
 May need to [install bevy dependencies](https://bevyengine.org/learn/quick-start/getting-started/setup/) before compiling.
-It may also be neccessary to use due to the large number of dependencies that bevy uses:
+It may also be neccessary to use the below modified cargo command due to the large number of dependencies that bevy uses:
 ```bash
 RUST_MIN_STACK=<16777216 or some equally large number of bytes> cargo build --release
 ```
