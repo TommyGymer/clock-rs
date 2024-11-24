@@ -1,5 +1,4 @@
-use bevy::prelude::*;
-use bevy::sprite::Anchor;
+use bevy::{prelude::*, sprite::Anchor, window::PresentMode};
 use chrono::{Local, Timelike};
 use std::f32::consts::TAU;
 
@@ -98,24 +97,24 @@ fn add_hands(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 fn update_hands(mut query: Query<(&mut Transform, &TimeSteps), With<Hand>>) {
     let now = Local::now();
+
+    let time_now = now.time();
+    let hour: f32 = time_now.hour12().1 as f32;
+    let minute: f32 = time_now.minute() as f32;
+    let second: f32 = time_now.second() as f32;
+    let nanosecond: f32 = time_now.nanosecond() as f32;
+
     for (mut transform, time_steps) in query.iter_mut() {
         match time_steps {
             TimeSteps::Hour => {
-                transform.rotation = Quat::from_rotation_z(
-                    -TAU * (now.time().hour12().1 as f32 + now.time().minute() as f32 / 60.) / 12.,
-                )
+                transform.rotation = Quat::from_rotation_z(-TAU * (hour + minute / 60.) / 12.)
             }
             TimeSteps::Minute => {
-                transform.rotation = Quat::from_rotation_z(
-                    -TAU * (now.time().minute() as f32 + now.time().second() as f32 / 60.) / 60.,
-                )
+                transform.rotation = Quat::from_rotation_z(-TAU * (minute + second / 60.) / 60.)
             }
             TimeSteps::Second => {
-                transform.rotation = Quat::from_rotation_z(
-                    -TAU * (now.time().second() as f32
-                        + now.time().nanosecond() as f32 / 1000000000.)
-                        / 60.,
-                )
+                transform.rotation =
+                    Quat::from_rotation_z(-TAU * (second + nanosecond / 1000000000.) / 60.)
             }
         }
     }
@@ -136,6 +135,7 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "clock-rs".into(),
+                present_mode: PresentMode::AutoVsync,
                 ..default()
             }),
             ..default()
